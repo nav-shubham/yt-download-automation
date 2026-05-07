@@ -1,6 +1,9 @@
 venv/
 __pycache__/
 downloads/
+old versions/
+links.txt
+youtube_no_api.csv
 *.pyc
 *.bat
 .env
@@ -9,3 +12,5 @@ daily_state.json
 downloaded.txt
 errors.log
 run_log.txt
+
+
