@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+downloads/
+*.pyc
+*.bat
+.env
+cookies.txt
+daily_state.json
+downloaded.txt
+errors.log
+run_log.txt
