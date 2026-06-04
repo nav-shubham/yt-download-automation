@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Antigravity local high-performance media downloader inspired by IDM with glassmorphic dark interface.">
+    <title>Antigravity Downloader - IDM Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local Styling -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Glass Background Effects -->
+    <div class="glass-bg-glow glow-1"></div>
+    <div class="glass-bg-glow glow-2"></div>
+    
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-area">
+                    <div class="logo-icon">
+                        <i class="fa-solid fa-cloud-arrow-down fa-bounce"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>ANTIGRAVITY</h1>
+                        <span>IDM ENGINE</span>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <button class="nav-item active" id="nav-btn-dashboard" onclick="switchTab('dashboard')">
+                    <i class="fa-solid fa-square-poll-vertical"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" id="nav-btn-queue" onclick="switchTab('queue')">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Active Queue</span>
+                    <span class="badge" id="badge-active-count">0</span>
+                </button>
+                <button class="nav-item" id="nav-btn-history" onclick="switchTab('history')">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Completed</span>
+                </button>
+                <button class="nav-item" id="nav-btn-settings" onclick="switchTab('settings')">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Settings</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="footer-status">
+                    <span class="pulse-dot"></span>
+                    <span class="status-lbl">Local Core Active</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Dashboard Bar -->
+            <header class="top-header">
+                <div class="welcome-text">
+                    <h2>Media Download Manager</h2>
+                    <p>High-speed multi-segmented YouTube & Playlist downloader</p>
+                </div>
+                
+                <!-- Quick Stats Info Cards -->
+                <div class="quick-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon orange-icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Today's Downloads</span>
+                            <span class="stat-value" id="stat-today">0 / 40</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon blue-icon">
+                            <i class="fa-solid fa-database"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Database</span>
+                            <span class="stat-value" id="stat-total">0</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- =============================================
+                 TAB: DASHBOARD
+                 ============================================= -->
+            <section class="tab-panel active" id="panel-dashboard">
+                <!-- Download Input Area -->
+                <div class="panel-card glass-panel downloader-card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-link"></i> Add New Link</h3>
+                        <span class="tag">Ready to Fetch</span>
+                    </div>
+                    
+                    <div class="url-input-group">
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="url-input" placeholder="Paste YouTube Video or Playlist URL here..." autocomplete="off">
+                            <button class="clear-btn" id="btn-clear-url" onclick="document.getElementById('url-input').value=''; this.style.display='none';"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <button class="action-btn primary-btn" id="btn-analyze" onclick="analyzeURL()">
+                            <span>Analyze URL</span>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Analysis Loader (Hidden initially) -->
+                    <div class="analysis-loader" id="analysis-loader" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Querying video streams and parsing structure...</p>
+                    </div>
+
+                    <!-- Stream Metadata Metadata Card (Hidden initially) -->
+                    <div class="metadata-result-card" id="metadata-card" style="display: none;">
+                        <div class="meta-thumbnail-area">
+                            <img src="" alt="Thumbnail" id="meta-thumb">
+                            <div class="duration-badge" id="meta-duration">00:00</div>
+                        </div>
+                        <div class="meta-details-area">
+                            <div class="meta-header">
+                                <h4 id="meta-title">Video Title Placeholder</h4>
+                                <span class="author" id="meta-uploader">Channel Name</span>
+                            </div>
+                            
+                            <div class="download-configurations">
+                                <div class="config-item">
+                                    <label for="select-mode">Format Mode</label>
+                                    <div class="custom-select">
+                                        <select id="select-mode" onchange="onModeChange()">
+                                            <option value="video" selected>Video + Audio (Merged)</option>
+                                            <option value="audio">Audio Only (M4A)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="config-item" id="config-res-item">
+                                    <label for="select-resolution">Target Resolution</label>
+                                    <div class="custom-select">
+                                        <select id="select-resolution">
+                                            <!-- Dynamically populated -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="meta-actions">
+                                <button class="action-btn success-btn" onclick="addToQueue(true)">
+                                    <i class="fa-solid fa-download"></i>
+                                    <span>Download Now</span>
+                                </button>
+                                <button class="action-btn secondary-btn" onclick="addToQueue(false)">
+                                    <i class="fa-solid fa-clock"></i>
+                                    <span>Add to Queue</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities Box -->
+                <div class="dashboard-split">
+                    <!-- Miniature Active Downloads List -->
+                    <div class="panel-card glass-panel">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-arrow-down-up-lock"></i> Live Downloads</h3>
+                            <button class="text-link" onclick="switchTab('queue')">View All</button>
+                        </div>
+                        <div class="mini-list" id="mini-downloads-list">
+                            <p class="empty-state">No downloads running currently.</p>
+                        </div>
+                    </div>
+
+                    <!-- Daily Limit Quota Progress -->
+                    <div class="panel-card glass-panel quota-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-shield-halved"></i> Daily Quota Monitor</h3>
+                        </div>
+                        <div class="quota-container">
+                            <div class="circular-progress-wrapper">
+                                <svg class="progress-ring" width="120" height="120">
+                                    <circle class="progress-ring__circle-bg" stroke="rgba(255, 255, 255, 0.05)" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
+                                    <circle class="progress-ring__circle" id="quota-circle" stroke="url(#quota-gradient)" stroke-width="8" fill="transparent" r="50" cx="60" cy="60" stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                                    <defs>
+                                        <linearGradient id="quota-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#00f2fe" />
+                                            <stop offset="100%" stop-color="#4facfe" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="quota-text">
+                                    <span class="number" id="quota-percentage">0%</span>
+                                    <span class="sub">Used</span>
+                                </div>
+                            </div>
+                            <div class="quota-info-details">
+                                <p>You have downloaded <strong id="quota-used-txt">0</strong> of <strong id="quota-total-txt">40</strong> daily automated video allowance limit.</p>
+                                <span class="quota-warning" id="quota-warning-msg">Quota Status: Optimal</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =============================================
+                 TAB: ACTIVE QUEUE
+                 ============================================= -->
+            <section class="tab-panel" id="panel-queue">
+                <div class="panel-card glass-panel flex-panel">
+                    <div class="card-header flex-header">
+                        <div>
+                            <h3><i class="fa-solid fa-list-check"></i> Active Download Queue</h3>
+                            <p>Real-time network segments & scheduler</p>
+                        </div>
+                        <div class="header-actions">
+                            <span class="concurrency-indicator">
+                                <i class="fa-solid fa-circle-nodes"></i> Max Connections: <span id="lbl-concurrency">2</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="idm-table" id="queue-table">
+                            <thead>
+                                <tr>
+                                    <th>Media Thumbnail & Title</th>
+                                    <th>Mode</th>
+                                    <th>Status</th>
+                                    <th>Progress</th>
+                                    <th>Speed</th>
+                                    <th>ETA</th>
+                                    <th class="actions-col">Control Panel</th>
+                                </tr>
+                            </thead>
+                            <tbody id="queue-tbody">
+                                <!-- Dynamically populated -->
+                                <tr>
+                                    <td colspan="7" class="loading-state">
+                                        <p class="empty-state">No tasks in download queue.</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =============================================
+                 TAB: COMPLETED HISTORY
+                 ============================================= -->
+            <section class="tab-panel" id="panel-history">
+                <div class="panel-card glass-panel flex-panel">
+                    <div class="card-header flex-header">
+                        <div>
+                            <h3><i class="fa-solid fa-circle-check"></i> Download Database Registry</h3>
+                            <p>History of completed extractions and metrics logged</p>
+                        </div>
+                        <div class="search-box">
+                            <i class="fa-solid fa-filter"></i>
+                            <input type="text" id="history-filter" placeholder="Filter history..." oninput="filterHistory()">
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="idm-table" id="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Video ID</th>
+                                    <th>Title</th>
+                                    <th>Creator / Channel</th>
+                                    <th>Views</th>
+                                    <th>Duration</th>
+                                    <th>Fetch Registry</th>
+                                    <th>Launch</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-tbody">
+                                <!-- Dynamically populated -->
+                                <tr>
+                                    <td colspan="7" class="loading-state">
+                                        <p class="empty-state">No historical downloads registered.</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =============================================
+                 TAB: SETTINGS
+                 ============================================= -->
+            <section class="tab-panel" id="panel-settings">
+                <div class="panel-card glass-panel">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-gears"></i> Antigravity System Settings</h3>
+                        <p>Configure speed segmenting limits and Telegram integrations</p>
+                    </div>
+                    
+                    <form class="settings-form" id="settings-form" onsubmit="saveSettingsForm(event)">
+                        <!-- Section: Download Limits -->
+                        <div class="settings-section">
+                            <h4><i class="fa-solid fa-network-wired"></i> Connection and Performance Limits</h4>
+                            <div class="settings-grid">
+                                <div class="form-group">
+                                    <label for="setting-max-concurrent">Concurrent Video Queue Size</label>
+                                    <p class="help-text">Number of items to download simultaneously.</p>
+                                    <input type="number" id="setting-max-concurrent" min="1" max="10">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setting-fragments">Simultaneous Connections (Aria-Segment Limit)</label>
+                                    <p class="help-text">Parallel connections per download chunk (Multi-threading like IDM).</p>
+                                    <input type="number" id="setting-fragments" min="1" max="16">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section: Defaults & Directories -->
+                        <div class="settings-section">
+                            <h4><i class="fa-solid fa-folder-open"></i> Extraction Storage & Defaults</h4>
+                            <div class="form-group full-width">
+                                <label for="setting-download-dir">Download Output Root Directory</label>
+                                <p class="help-text">Folder where downloaded content is organized.</p>
+                                <input type="text" id="setting-download-dir">
+                            </div>
+                            <div class="settings-grid">
+                                <div class="form-group">
+                                    <label for="setting-default-res">Preferred Resolution Limit</label>
+                                    <select id="setting-default-res">
+                                        <option value="2160">2160p (4K UHD)</option>
+                                        <option value="1440">1440p (QHD)</option>
+                                        <option value="1080">1080p (Full HD)</option>
+                                        <option value="720">720p (HD)</option>
+                                        <option value="480">480p</option>
+                                        <option value="360">360p</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="setting-default-mode">Preferred Format Option</label>
+                                    <select id="setting-default-mode">
+                                        <option value="video">Video + Audio (Merged)</option>
+                                        <option value="audio">Audio Only (M4A)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section: Telegram Notifications -->
+                        <div class="settings-section">
+                            <div class="toggle-header">
+                                <h4><i class="fa-solid fa-paper-plane"></i> Telegram Remote Notifications</h4>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="setting-tg-enabled" onchange="toggleTgSettings(this.checked)">
+                                    <span class="slider-toggle"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="settings-grid" id="tg-settings-fields">
+                                <div class="form-group">
+                                    <label for="setting-tg-token">Telegram Bot Token</label>
+                                    <input type="password" id="setting-tg-token" placeholder="Bot token from @BotFather">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setting-tg-chat">Telegram Chat ID</label>
+                                    <input type="text" id="setting-tg-chat" placeholder="Your individual or group Chat ID">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="action-btn success-btn">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Apply Settings</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast Floating Popups -->
+    <div class="toast-notification-area" id="toast-area"></div>
+
+    <!-- App JavaScript Logic -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

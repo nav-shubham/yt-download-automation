@@ -10,10 +10,10 @@ load_dotenv()
 # =========================
 # CONFIG
 # =========================
-SOURCE_URL = "https://www.youtube.com/playlist?list=PLDqahtm2vA73pdnNxGLfTQCG4dLbXY6Ja"
-VIDEOS_PER_DAY = 1
+SOURCE_URL = "https://www.youtube.com/playlist?list=PLUl4u3cNGP63quuKvMHCt3cmTmt0O2qpv"
+VIDEOS_PER_DAY = 40
 
-MODE = "audio"
+MODE = "video"
 RESOLUTION = "1080"
 
 DOWNLOAD_ROOT = Path("downloads")

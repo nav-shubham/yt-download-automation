@@ -14,3 +14,11 @@ errors.log
 run_log.txt
 
 
+
+# Added by Antigravity CLI
+.env.*
+.env.local
+.venv/
+downloader.db
+emails.db
+env/

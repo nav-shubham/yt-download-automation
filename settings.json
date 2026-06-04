@@ -1,0 +1,10 @@
+{
+  "max_concurrent": 4,
+  "concurrent_fragments": 5,
+  "download_dir": "D:\\PythonTools\\yt_download\\downloads",
+  "default_resolution": "1080",
+  "default_mode": "video",
+  "telegram_enabled": true,
+  "telegram_bot_token": "8729490850:AAFKLvzE7DTTp67dbf8ejsVKYP4SIDIyKkE",
+  "telegram_chat_id": "752824992"
+}
