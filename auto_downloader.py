@@ -10,8 +10,8 @@ load_dotenv()
 # =========================
 # CONFIG
 # =========================
-SOURCE_URL = "https://www.youtube.com/playlist?list=PLUl4u3cNGP63quuKvMHCt3cmTmt0O2qpv"
-VIDEOS_PER_DAY = 40
+SOURCE_URL = "https://www.youtube.com/playlist?list=PLCAnSQcmLld1Sti3VvMl41DGiqXM4nF-B"
+VIDEOS_PER_DAY = 200
 
 MODE = "video"
 RESOLUTION = "1080"
